@@ -32,8 +32,13 @@ public class DriveService {
             drive.setHistoryOfAllowed(driveDto.isHistoryOfAllowed());
             drive.setJobTitle(driveDto.getJobTitle());
             drive.setDate(driveDto.getDate());
+            if(driveDto.getRegistrationClosingDate().before(driveDto.getDate()) ){
+                drive.setRegistrationClosingDate(driveDto.getRegistrationClosingDate());
+            }
+            else{
+                throw new RuntimeException("date is not correct");
+            }
             drive.setCompanyLocation(driveDto.getCompanyLocation());
-
             Optional<Company> company = companyrepository.findById(driveDto.getCompanyId());
             Company company1 = company.get();
             if (company1 != null) {
@@ -42,7 +47,6 @@ public class DriveService {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found with ID: " + driveDto.getCompanyId());
-
         }
         return ResponseEntity.ok(driverepository.save(drive));
 

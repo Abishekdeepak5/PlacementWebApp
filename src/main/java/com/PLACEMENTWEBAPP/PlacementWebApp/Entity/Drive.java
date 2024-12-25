@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -16,9 +17,35 @@ public class Drive {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Date date;
+    private Date RegistrationClosingDate;
     private String jobTitle;
     private Long eligibleCgpa;
     private String description;
+    @ManyToMany
+    @JoinTable(
+            name = "drive_student_registration",
+            joinColumns = @JoinColumn(name = "drive_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    @JsonIgnore
+    private List<Student> registeredStudents;
+
+    public List<Student> getRegisteredStudents() {
+        return registeredStudents;
+    }
+
+    public void setRegisteredStudents(List<Student> registeredStudents) {
+        this.registeredStudents = registeredStudents;
+    }
+
+    public Date getRegistrationClosingDate() {
+        return RegistrationClosingDate;
+    }
+
+    public void setRegistrationClosingDate(Date registrationClosingDate) {
+        RegistrationClosingDate = registrationClosingDate;
+    }
+
     private boolean isHistoryOfAllowed;
     private Long ctc;
     private String companyLocation;

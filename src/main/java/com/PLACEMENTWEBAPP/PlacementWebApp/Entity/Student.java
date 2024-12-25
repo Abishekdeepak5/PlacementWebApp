@@ -43,14 +43,29 @@ public class Student implements UserDetails {
     private String community;
     @NotNull
     private String caste;
+
+
+
+
     @NotNull
     private boolean hosteler;
     private boolean verified;
+
+   @ManyToMany(mappedBy = "registeredStudents")
+   private List<Drive>registeredDriveList;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.STUDENT;
 
     private int otp;
+
+    public List<Drive> getRegisteredDriveList() {
+        return registeredDriveList;
+    }
+
+    public void setRegisteredDriveList(List<Drive> registeredDriveList) {
+        this.registeredDriveList = registeredDriveList;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Return roles or authorities; if no roles, return an empty list

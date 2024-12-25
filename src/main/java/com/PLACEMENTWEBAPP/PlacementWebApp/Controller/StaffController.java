@@ -2,7 +2,9 @@ package com.PLACEMENTWEBAPP.PlacementWebApp.Controller;
 
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.DriveDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Company;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Staff;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.CompanyRepository;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StaffRepository;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.CompanyService;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.DriveService;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.StaffService;
@@ -25,6 +27,11 @@ public class StaffController {
 
     @Autowired
     private StaffService staffService;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+
 
     @PostMapping("/createCompany")
     public ResponseEntity<?> createCompany(@RequestBody Company company) throws Exception {

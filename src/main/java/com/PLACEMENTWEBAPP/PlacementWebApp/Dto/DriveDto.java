@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class DriveDto {
+    public Date RegistrationClosingDate;
     private Date date;
     private String jobTitle;
     private Long eligibleCgpa;
@@ -84,6 +85,14 @@ public class DriveDto {
 
     public Long getCompanyId() {
         return companyId;
+    }
+
+    public Date getRegistrationClosingDate() {
+        return RegistrationClosingDate;
+    }
+
+    public void setGetRegistrationClosingDate(Date getRegistrationClosingDate) {
+        this.RegistrationClosingDate = getRegistrationClosingDate;
     }
 
     public void setCompanyId(Long companyId) {

@@ -3,7 +3,9 @@ package com.PLACEMENTWEBAPP.PlacementWebApp.Controller;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.LoginDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.OtpVerificationRequest;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.ResponseDto;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Staff;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.StudentDTO;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StaffRepository;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.AuthService;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private StaffRepository staffRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody Student student){
@@ -52,6 +57,12 @@ public class AuthController {
             return ResponseEntity.status(500).body("Error : " + e.getMessage());
         }
 
+    }
+    @PostMapping("/staffRegister")
+    public Staff createStaff(@RequestBody Staff staff){
+        System.out.println(staff.getEmail());
+        System.out.println(staff.getPassword());
+        return staffRepository.save(staff);
     }
 
 }
