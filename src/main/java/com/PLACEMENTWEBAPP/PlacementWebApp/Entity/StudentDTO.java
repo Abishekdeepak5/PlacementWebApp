@@ -20,11 +20,10 @@ public class StudentDTO {
     private Long id;
     private String name;
     private Long registerNumber;
+    private String rollNumber;
     private Date dateOfBirth;
-    private int age;
     private int batch;
     private String email;
-    private String community;
-    private String caste;
     private boolean hosteler;
+    private char gender;
 }

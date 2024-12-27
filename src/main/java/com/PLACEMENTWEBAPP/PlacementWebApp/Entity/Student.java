@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name="student")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student implements UserDetails {
+public class Student  extends BaseModel implements UserDetails{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -31,8 +31,6 @@ public class Student implements UserDetails {
     @NotNull
     private Date dateOfBirth;
     @NotNull
-    private int age;
-    @NotNull
     private int batch;
     @Column(unique = true)
     @NotNull
@@ -40,17 +38,16 @@ public class Student implements UserDetails {
     @NotNull
     private String password;
     @NotNull
-    private String community;
-    @NotNull
-    private String caste;
-
-
-
-
-    @NotNull
     private boolean hosteler;
     private boolean verified;
+    @NotNull
+    private char gender;
 
+
+
+
+    @NotNull
+    private String rollNumber;
    @ManyToMany(mappedBy = "registeredStudents")
    private List<Drive>registeredDriveList;
 
@@ -142,21 +139,11 @@ public class Student implements UserDetails {
         this.name = name;
     }
 
-    public void setCommunity(String community) {
-        this.community = community;
-    }
-
-    public void setCaste(String caste) {
-        this.caste = caste;
-    }
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     public void setBatch(int batch) {
         this.batch = batch;

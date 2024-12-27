@@ -8,12 +8,14 @@ import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.StudentDTO;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StaffRepository;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.AuthService;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -25,27 +27,25 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody Student student){
-        System.out.println("Welcome to signup");
         try{
             authService.createNewStudent(student);
-            return ResponseEntity.ok("otp sent to mail!");
+            return ResponseEntity.ok(Map.of("message","otp sent to mail!"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
         }
     }
-    @PostMapping("/signup/verify")
-    public ResponseEntity<?>verifyOtp(@RequestBody OtpVerificationRequest otpVerificationRequest){
 
-        System.out.println("Welcome to verifyOtp");
-        try{
-            Student student=otpVerificationRequest.getStudent();
-            int otp= otpVerificationRequest.getOtp();
-            authService.verifyOtp(otp, student);
-            return ResponseEntity.ok("verified successfully");
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    @PostMapping("/signup/verify")
+    public ResponseEntity<?>verifyOtp(@RequestBody Student student){
+            try{
+                int otp= Integer.valueOf(student.message);
+                if(authService.verifyOtp(otp, student)){
+                    return ResponseEntity.ok(Map.of("message","verified successfully"));
+                }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message","OTP invalid"));
+            }catch(Exception e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
+            }
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) throws Exception {

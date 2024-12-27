@@ -23,7 +23,8 @@ public class OTPService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("emanikandan9750@gmail.com");
         message.setTo(toEmail);
-        message.setText("Hi,\n\n"+String.valueOf(otp)+" "+"is your Quest Financial Verification OTP. Please do not share it with anyone.\n\n Team Quest Financial ");
+        message.setText("Hi,\n\n"+String.valueOf(otp)+" "+"is your Quest Financial Verification OTP. Please do not share it with anyone." +
+                "Click here to verify: http://localhost:4200/verify/"+toEmail+" \n\n Team Quest Financial ");
         message.setSubject("OTP Generation for QUEST FINANCIAL");
         mailSender.send(message);
         System.out.println("Mail Send Successfully");
