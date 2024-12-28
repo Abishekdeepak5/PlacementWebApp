@@ -43,9 +43,6 @@ public class Student  extends BaseModel implements UserDetails{
     @NotNull
     private char gender;
 
-
-
-
     @NotNull
     private String rollNumber;
    @ManyToMany(mappedBy = "registeredStudents")
@@ -55,6 +52,20 @@ public class Student  extends BaseModel implements UserDetails{
     private Role role = Role.STUDENT;
 
     private int otp;
+
+    private boolean isPlaced;
+
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public void setPlaced(boolean placed) {
+        isPlaced = placed;
+    }
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="marks_id" ,referencedColumnName="id")
+    private Marks marks;
 
     public List<Drive> getRegisteredDriveList() {
         return registeredDriveList;
@@ -139,6 +150,49 @@ public class Student  extends BaseModel implements UserDetails{
         this.name = name;
     }
 
+    public void setRegisterNumber(Long registerNumber) {
+        this.registerNumber = registerNumber;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public int getBatch() {
+        return batch;
+    }
+
+    public boolean isHosteler() {
+        return hosteler;
+    }
+
+    public void setHosteler(boolean hosteler) {
+        this.hosteler = hosteler;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public Marks getMarks() {
+        return marks;
+    }
+
+    public void setMarks(Marks marks) {
+        this.marks = marks;
+    }
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;

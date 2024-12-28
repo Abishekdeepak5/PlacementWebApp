@@ -1,13 +1,11 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Controller;
 
+import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.MarkDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.DriveRegistration;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/student")
@@ -25,4 +23,10 @@ public class StudentController {
            throw new Exception("something happens");
        }
    }
+   @PostMapping("/uploadMarks")
+    public Student uploadmarks(@RequestBody MarkDto markDto) throws Exception {
+       System.out.println("welcome");
+       return studentService.uploadMarks(markDto);
+   }
+
 }
