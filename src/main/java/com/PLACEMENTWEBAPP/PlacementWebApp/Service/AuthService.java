@@ -57,7 +57,8 @@ public class AuthService {
 
         ResponseDto responseDto=new ResponseDto();
         if(student.getPassword().equals(loginDto.getPassword())){
-            String accessToken=tokenGenerator.generateAccessToken(student.getEmail(),student.getId(),student.getRole());
+//            String accessToken=tokenGenerator.generateAccessToken(student.getEmail(),student.getId(),student.getRole());
+            String accessToken=tokenGenerator.generateAccessToken(student);
             String refreshToken=tokenGenerator.generateRefreshToken(student.getEmail(),student.getId(),student.getRole());
             responseDto.setStudent(student);
             responseDto.setAccessToken(accessToken);

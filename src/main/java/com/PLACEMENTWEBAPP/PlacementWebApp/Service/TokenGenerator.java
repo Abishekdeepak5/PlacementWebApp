@@ -1,5 +1,6 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -35,7 +36,9 @@ public class TokenGenerator {
     //create Secret Key
     private Key getSiginKey()
     {
-        byte[] key= Decoders.BASE64.decode("413F442847284862506553685660597033733676397924422645294840406351");
+//        byte[] key= Decoders.BASE64.decode("413F442847284862506553685660597033733676397924422645294840406351");
+        byte[] key= Decoders.BASE64.decode("413F4428472B4B6250655368566D5970337336763979244226452948404D6351");
+
         return Keys.hmacShaKeyFor(key);
     }
 
@@ -61,11 +64,11 @@ public class TokenGenerator {
     }
 
     //Method to Generate Access Token
-    public String generateAccessToken(String email, Long userId, Role role) {
+    public String generateAccessToken(Student student) {
         return Jwts.builder()
-                .setSubject(email)
-                .claim("userId", userId)
-                .claim("role", role.name())
+                .setSubject(student.getEmail())
+//                .claim("userId", userId)
+//                .claim("role", role.name())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSiginKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -94,4 +97,5 @@ public class TokenGenerator {
             return false;
         }
     }
+
 }
