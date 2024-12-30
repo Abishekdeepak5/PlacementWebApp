@@ -1,5 +1,6 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 
+import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.DriveResponseDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.MarkDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.DriveRegistration;
@@ -15,7 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,14 +40,13 @@ public class StudentService {
         return studentRepository.findById(id).orElseThrow();
     }
 
-    public DriveRegistration registerForDrive(Long studentId,Long driveId) throws Exception {
-        System.out.println(studentId);
-      Student student1=getStudentById(studentId);
+    public DriveRegistration registerForDrive(String email,Long driveId) throws Exception {
+        System.out.println(email);
+      Student student1=studentRepository.findByEmail(email);
 //      Student student1=student.get();
 
       Optional<Drive>drive=driverepository.findById(driveId);
       Drive drive1=drive.get();
-
 
       if(student1!=null && drive1!=null && drive1.getRegistrationClosingDate().after(new Date())
 ){
@@ -159,6 +161,29 @@ public class StudentService {
         catch(Exception e){
             throw new Exception("student not found");
         }
+    }
+    public List<DriveResponseDto> getUpcomingDrive(String email){
+        Student student=studentRepository.findByEmail(email);
+        List<Drive>drive=new ArrayList<>();
+        drive=driverepository.findAll();
+        List<DriveResponseDto>upcomingDrive=new ArrayList<>();
+
+        for(Drive drive1:drive){
+            if(drive1.getDate().after(new Date())){
+                DriveResponseDto responseDto=new DriveResponseDto();
+                if(drive1.getRegisteredStudents().contains(student)){
+                    responseDto.setDrive(drive1);
+                    responseDto.setRegistered(true);
+                }
+                else{
+
+                    responseDto.setDrive(drive1);
+                    responseDto.setRegistered(false);
+                }
+                upcomingDrive.add(responseDto);
+            }
+        }
+        return upcomingDrive;
     }
 
 }
