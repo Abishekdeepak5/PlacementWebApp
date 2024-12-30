@@ -19,7 +19,7 @@ public class Drive {
     private Date date;
     private Date RegistrationClosingDate;
     private String jobTitle;
-    private Long eligibleCgpa;
+    private double eligibleCgpa;
     private String description;
     @ManyToMany
     @JoinTable(
@@ -47,7 +47,7 @@ public class Drive {
     }
 
     private boolean isHistoryOfAllowed;
-    private Long ctc;
+    private double ctc;
     private String companyLocation;
     private String driveLocation;
     @ManyToOne(fetch= FetchType.LAZY,cascade= CascadeType.PERSIST)
@@ -79,7 +79,7 @@ public class Drive {
         this.jobTitle = jobTitle;
     }
 
-    public Long getEligibleCgpa() {
+    public double getEligibleCgpa() {
         return eligibleCgpa;
     }
 
@@ -103,7 +103,7 @@ public class Drive {
         isHistoryOfAllowed = historyOfAllowed;
     }
 
-    public Long getCtc() {
+    public double getCtc() {
         return ctc;
     }
 

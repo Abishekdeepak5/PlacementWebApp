@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/staff")
 public class StaffController {
     @Autowired
@@ -37,11 +40,11 @@ public class StaffController {
     public ResponseEntity<?> createCompany(@RequestBody Company company) throws Exception {
         try {
             staffService.createNewCompany(company);
-            return  ResponseEntity.ok("company is created");
+            return  ResponseEntity.ok(Map.of("message","company is created"));
         }
     catch(Exception e){
         System.out.println(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
     }
     }
     @GetMapping("/getCompany/{id}")

@@ -15,6 +15,7 @@ import org.yaml.snakeyaml.error.Mark;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/student")
 public class StudentController {
   @Autowired

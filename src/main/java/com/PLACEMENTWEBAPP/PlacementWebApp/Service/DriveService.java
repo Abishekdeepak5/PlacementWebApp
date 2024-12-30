@@ -46,7 +46,8 @@ public class DriveService {
                 drive.setCompany(company1);
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found with ID: " + driveDto.getCompanyId());
+//            "Company not found with ID: " + driveDto.getCompanyId()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok(driverepository.save(drive));
 
