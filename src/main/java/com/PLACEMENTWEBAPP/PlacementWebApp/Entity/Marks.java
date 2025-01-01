@@ -161,4 +161,26 @@ public class Marks {
     @OneToOne(mappedBy = "marks")
     @JsonIgnore
     private Student student;
+
+    @Override
+    public String toString() {
+        return "Marks{" +
+                "id=" + id +
+                ", SSLC=" + SSLC +
+                ", HSC1=" + HSC1 +
+                ", HSC2=" + HSC2 +
+                ", diploma=" + diploma +
+                ", sem1=" + sem1 +
+                ", sem2=" + sem2 +
+                ", sem3=" + sem3 +
+                ", sem4=" + sem4 +
+                ", sem5=" + sem5 +
+                ", sem6=" + sem6 +
+                ", sem7=" + sem7 +
+                ", cgpa=" + cgpa +
+                ", historyOfArrear=" + historyOfArrear +
+                ", currentBacklogs=" + currentBacklogs +
+                ", student=" + student +
+                '}';
+    }
 }

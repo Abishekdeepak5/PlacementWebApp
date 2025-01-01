@@ -6,10 +6,7 @@ import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.DriveRegistration;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Marks;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.DriveStudentRegistrationRepository;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.Driverepository;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.MarkRepository;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StudentRepository;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,8 +23,9 @@ public class StudentService {
 
    @Autowired
    private StudentRepository studentRepository;
-
    @Autowired
+   private StudentRepo studentRepo;
+    @Autowired
    private MarkRepository markRepository;
 
     @Autowired
@@ -141,12 +139,26 @@ public class StudentService {
 //        }
         try{
             Student student=studentRepository.findByEmail(email);
-
+            System.out.println("Mark "+mark);
+            System.out.println("Mark4 "+(student.getMarks()==null)+" "+student.getMarks());
+            if(student.getMarks()==null){
+                System.out.println("Mark3 "+student.getMarks());
                 mark.setStudent(student);
                 markRepository.save(mark);
                 student.setMarks(mark);
                 return studentRepository.save(student);
-
+            }else{
+                Marks markInfo=student.getMarks();
+                System.out.println("Mark1 "+markInfo);
+                studentRepo.setMarksById(mark.getSSLC(),mark.getHSC1(),mark.getHSC2(),
+                        mark.getDiploma(),mark.getSem1(),mark.getSem2(),mark.getSem3(),
+                        mark.getSem4(),mark.getSem5(),mark.getSem6(),mark.getSem7(),
+                        mark.getCgpa(),mark.getCurrentBacklogs(),mark.isHistoryOfArrear(),markInfo.getId());
+                        studentRepository.save(student);
+                        student=studentRepository.findByEmail(email);
+                        System.out.println("Mark2 "+student.getMarks());
+            }
+            return student;
         }
         catch (Exception e){
             throw new Exception("student is not found"+e.getMessage());
@@ -154,7 +166,16 @@ public class StudentService {
 
 
     }
-
+    public Marks getMarks(String email){
+        try{
+            Student student=studentRepository.findByEmail(email);
+            return student.getMarks();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
     public UserDetailsService userDetailsService() throws Exception {
         try{
         return username -> studentRepository.findByEmail(username);}

@@ -53,12 +53,14 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             System.out.println("Authorization Header: " + authorizationHeader);
 
             jwt = authorizationHeader.substring(7); // Extract the token
+            System.out.println("jwt: "+jwt);
             try {
                 username = otpService.extractUserName(jwt); // Decode to get the username
+                System.out.println("username: "+username);
             } catch (Exception e) {
+                System.out.println("err: "+e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
                 return;
-
             } // Decode to get the username
         }
         System.out.println("username"+username);

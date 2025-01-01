@@ -40,9 +40,15 @@ public class StudentController {
     public Student uploadmarks(@RequestHeader("Authorization")String token, @RequestBody Marks mark) throws Exception {
        String tokenExtraction=token.substring(7);
        String email=tokenGenerator.extractUserName(tokenExtraction);
-       System.out.println("welcome");
+       System.out.println("welcome  "+email);
        return studentService.uploadMarks(email,mark);
    }
+    @GetMapping("/getMarks")
+    public Marks getMarks(@RequestHeader("Authorization")String token){
+        String tokenExtraction=token.substring(7);
+        String email=tokenGenerator.extractUserName(tokenExtraction);
+        return studentService.getMarks(email);
+    }
    @GetMapping("/getUpcomingDrive")
     public List<DriveResponseDto> getUpcomingDrive(@RequestHeader("Authorization")String token){
        String tokenExtraction=token.substring(7);
