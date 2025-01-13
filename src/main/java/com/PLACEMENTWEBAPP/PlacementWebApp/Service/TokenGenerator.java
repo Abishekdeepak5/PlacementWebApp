@@ -68,8 +68,8 @@ public class TokenGenerator {
         return Jwts.builder()
                 .setSubject(student.getEmail())
 //                .claim("userId", userId)
-//                .claim("role", role.name())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+//                .claim("role", role.name())  3 days
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24* 60 * 3 ))
                 .signWith(getSiginKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

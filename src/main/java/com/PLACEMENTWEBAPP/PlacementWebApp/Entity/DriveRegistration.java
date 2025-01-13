@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Table(name="DriveRegistration")
 @Getter
 @Setter
-public class DriveRegistration {
+public class DriveRegistration extends BaseModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

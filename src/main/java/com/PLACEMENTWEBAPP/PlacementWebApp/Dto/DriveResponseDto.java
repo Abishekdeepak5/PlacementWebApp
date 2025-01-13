@@ -5,7 +5,7 @@ import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
 public class DriveResponseDto  {
     private Drive drive;
     private boolean isRegistered;
-
+    public String companyName;
     public Drive getDrive() {
         return drive;
     }

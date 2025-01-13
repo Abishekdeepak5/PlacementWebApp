@@ -3,13 +3,16 @@ package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.DriveDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Company;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.CompanyRepository;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.Driverepository;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.QueryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +22,8 @@ public class DriveService {
 
     @Autowired
     private Driverepository driverepository;
-
+    @Autowired
+    QueryRepo queryRepo;
 
     public ResponseEntity<?> createNewDrive(DriveDto driveDto) {
         Drive drive;
@@ -32,6 +36,7 @@ public class DriveService {
             drive.setHistoryOfAllowed(driveDto.isHistoryOfAllowed());
             drive.setJobTitle(driveDto.getJobTitle());
             drive.setDate(driveDto.getDate());
+            drive.setCount(0);
             if(driveDto.getRegistrationClosingDate().before(driveDto.getDate()) ){
                 drive.setRegistrationClosingDate(driveDto.getRegistrationClosingDate());
             }
@@ -46,10 +51,16 @@ public class DriveService {
                 drive.setCompany(company1);
             }
         } catch (Exception e) {
-//            "Company not found with ID: " + driveDto.getCompanyId()
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         return ResponseEntity.ok(driverepository.save(drive));
-
+    }
+    public void deleteDrive(Long driveId) throws Exception{
+        queryRepo.deleteDrive(driveId);
+    }
+    public List<Student> getDriveStudent(Long driveId){
+        Optional<Drive> driveOp=driverepository.findById(driveId);
+        Drive drive=driveOp.get();
+        return drive.getRegisteredStudents();
     }
 }

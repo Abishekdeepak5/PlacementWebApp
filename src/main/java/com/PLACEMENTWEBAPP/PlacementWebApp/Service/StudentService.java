@@ -1,18 +1,12 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.DriveResponseDto;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.MarkDto;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.DriveRegistration;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Marks;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.*;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,13 +18,18 @@ public class StudentService {
    @Autowired
    private StudentRepository studentRepository;
    @Autowired
-   private StudentRepo studentRepo;
+   private QueryRepo studentRepo;
     @Autowired
    private MarkRepository markRepository;
 
     @Autowired
     private Driverepository driverepository;
 
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private TokenGenerator tokenGenerator;
     @Autowired
     private DriveStudentRegistrationRepository driveStudentRegistrationRepository;
 
@@ -48,6 +47,9 @@ public class StudentService {
 
       if(student1!=null && drive1!=null && drive1.getRegistrationClosingDate().after(new Date())
 ){
+          if(student1.getMarks()==null){
+              throw new Exception("Please update mark");
+          }
           if(student1.getMarks().getCgpa()<drive1.getEligibleCgpa()){
               throw new Exception("not eligible because cgpa is not enough");
           }
@@ -65,6 +67,7 @@ public class StudentService {
           driveRegistration.setStatus("registered");
           student1.getRegisteredDriveList().add(drive1);
           drive1.getRegisteredStudents().add(student1);
+          drive1.setCount(drive1.getRegisteredStudents().size());
           studentRepository.save(student1);
           driverepository.save(drive1);
           return driveStudentRegistrationRepository.save(driveRegistration);
@@ -176,6 +179,26 @@ public class StudentService {
             return null;
         }
     }
+    public DriveResponseDto getDriveResponse(Long driveId,Student student) throws  Exception{
+        Drive drive=getDriveById(driveId);
+        DriveResponseDto driveResponseDto=new DriveResponseDto();
+        driveResponseDto.setDrive(drive);
+        driveResponseDto.companyName=drive.getCompany().getCompanyName();
+        driveResponseDto.setRegistered(drive.isStudentRegister(student));
+        return driveResponseDto;
+    }
+    public List<Company> getCompanies(){
+        return companyService.getCompanies();
+    }
+    public Student getStudentByToken(String token){
+        String tokenExtraction=token.substring(7);
+        String email=tokenGenerator.extractUserName(tokenExtraction);
+        return studentRepository.findByEmail(email);
+    }
+    public Drive getDriveById(Long driveId) throws Exception{
+        Optional<Drive> driveInfo = driverepository.findById(driveId);
+        return  driveInfo.get();
+    }
     public UserDetailsService userDetailsService() throws Exception {
         try{
         return username -> studentRepository.findByEmail(username);}
@@ -201,6 +224,7 @@ public class StudentService {
                     responseDto.setDrive(drive1);
                     responseDto.setRegistered(false);
                 }
+                responseDto.companyName=responseDto.getDrive().getCompany().getCompanyName();
                 upcomingDrive.add(responseDto);
             }
         }

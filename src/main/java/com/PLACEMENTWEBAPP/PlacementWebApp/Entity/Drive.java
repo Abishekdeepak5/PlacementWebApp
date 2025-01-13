@@ -21,6 +21,7 @@ public class Drive {
     private String jobTitle;
     private double eligibleCgpa;
     private String description;
+    private int count;
     @ManyToMany
     @JoinTable(
             name = "drive_student_registration",
@@ -63,6 +64,14 @@ public class Drive {
         this.id = id;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -83,7 +92,7 @@ public class Drive {
         return eligibleCgpa;
     }
 
-    public void setEligibleCgpa(Long eligibleCgpa) {
+    public void setEligibleCgpa(Double eligibleCgpa) {
         this.eligibleCgpa = eligibleCgpa;
     }
 
@@ -107,7 +116,7 @@ public class Drive {
         return ctc;
     }
 
-    public void setCtc(Long ctc) {
+    public void setCtc(Double ctc) {
         this.ctc = ctc;
     }
 
@@ -133,5 +142,34 @@ public class Drive {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public boolean isStudentRegister(Student student){
+        return registeredStudents.contains(student);
+    }
+    public boolean isClosed(){
+        return this.RegistrationClosingDate.before(this.date);
+    }
+    public boolean isDriveFinish(){
+        return this.date.before(new Date());
+    }
+
+    @Override
+    public String toString() {
+        return "Drive{" +
+                "id=" + id +
+                ", date=" + date +
+                ", RegistrationClosingDate=" + RegistrationClosingDate +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", eligibleCgpa=" + eligibleCgpa +
+                ", description='" + description + '\'' +
+                ", count=" + count +
+                ", registeredStudents=" + registeredStudents +
+                ", isHistoryOfAllowed=" + isHistoryOfAllowed +
+                ", ctc=" + ctc +
+                ", companyLocation='" + companyLocation + '\'' +
+                ", driveLocation='" + driveLocation + '\'' +
+                ", company=" + company +
+                '}';
     }
 }

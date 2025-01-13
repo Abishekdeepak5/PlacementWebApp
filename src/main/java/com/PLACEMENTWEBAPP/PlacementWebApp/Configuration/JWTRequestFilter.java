@@ -67,6 +67,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//        try{
             System.out.println("hi");
             UserDetails userDetails = null;
             try {
@@ -104,7 +105,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             }
         }
         else{
-            System.out.println("something happens");
+            System.out.println("something happens ");
         }
         chain.doFilter(request, response);
     }

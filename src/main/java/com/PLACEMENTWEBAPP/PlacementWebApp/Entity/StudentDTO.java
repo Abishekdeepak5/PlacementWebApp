@@ -26,4 +26,5 @@ public class StudentDTO {
     private String email;
     private boolean hosteler;
     private char gender;
+    private String department;
 }

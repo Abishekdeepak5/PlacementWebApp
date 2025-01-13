@@ -8,17 +8,17 @@ import java.util.Date;
 @Getter
 @Setter
 public class DriveDto {
+    public Long id;
     public Date RegistrationClosingDate;
     private Date date;
     private String jobTitle;
-    private Long eligibleCgpa;
+    private Double eligibleCgpa;
     private String description;
     private boolean isHistoryOfAllowed;
-    private Long ctc;
+    private Double ctc;
     private String companyLocation;
     private String driveLocation;
     private Long companyId;
-
     public Date getDate() {
         return date;
     }
@@ -35,11 +35,11 @@ public class DriveDto {
         this.jobTitle = jobTitle;
     }
 
-    public Long getEligibleCgpa() {
+    public Double getEligibleCgpa() {
         return eligibleCgpa;
     }
 
-    public void setEligibleCgpa(Long eligibleCgpa) {
+    public void setEligibleCgpa(Double eligibleCgpa) {
         this.eligibleCgpa = eligibleCgpa;
     }
 
@@ -59,11 +59,11 @@ public class DriveDto {
         this.description = description;
     }
 
-    public Long getCtc() {
+    public Double getCtc() {
         return ctc;
     }
 
-    public void setCtc(Long ctc) {
+    public void setCtc(Double ctc) {
         this.ctc = ctc;
     }
 
@@ -97,5 +97,22 @@ public class DriveDto {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
+    }
+
+    @Override
+    public String toString() {
+        return "DriveDto{" +
+                "id=" + id +
+                ", RegistrationClosingDate=" + RegistrationClosingDate +
+                ", date=" + date +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", eligibleCgpa=" + eligibleCgpa +
+                ", description='" + description + '\'' +
+                ", isHistoryOfAllowed=" + isHistoryOfAllowed +
+                ", ctc=" + ctc +
+                ", companyLocation='" + companyLocation + '\'' +
+                ", driveLocation='" + driveLocation + '\'' +
+                ", companyId=" + companyId +
+                '}';
     }
 }
