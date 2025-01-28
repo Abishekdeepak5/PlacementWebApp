@@ -1,5 +1,6 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,99 +20,41 @@ import java.util.List;
 @Table(name="student")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student  extends BaseModel implements UserDetails{
+public class Student extends BaseModel{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private String name;
+
     @Column(unique = true)
     @NotNull
     private Long registerNumber;
+
     @NotNull
-    private Date dateOfBirth;
+    private Integer batch;
+
     @NotNull
-    private int batch;
-    @Column(unique = true)
-    @NotNull
-    private String email;
-    @NotNull
-    private String password;
-    @NotNull
-    private boolean hosteler;
-    private boolean verified;
-    @NotNull
-    private char gender;
+    private Boolean hosteler;
 
     @NotNull
     private String rollNumber;
-   @ManyToMany(mappedBy = "registeredStudents")
-   private List<Drive>registeredDriveList;
 
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.STUDENT;
+    @ManyToMany(mappedBy = "registeredStudents")
+    private List<Drive>registeredDriveList;
 
-    private int otp;
-
-    private boolean isPlaced;
-    private String department;
-    public boolean isPlaced() {
-        return isPlaced;
-    }
-
-    public void setPlaced(boolean placed) {
-        isPlaced = placed;
-    }
+    private Boolean isPlaced;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="marks_id" ,referencedColumnName="id")
     private Marks marks;
 
-    public List<Drive> getRegisteredDriveList() {
-        return registeredDriveList;
-    }
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="user_id" ,referencedColumnName="id")
+    private User user;
+
+
 
     public void setRegisteredDriveList(List<Drive> registeredDriveList) {
         this.registeredDriveList = registeredDriveList;
-    }
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return roles or authorities; if no roles, return an empty list
-        return List.of(() -> role.name());    }
-
-    @Override
-    public String getPassword() {
-        return this.password; // Ensure your password field is mapped correctly
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email; // Use email as the username
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // Modify based on your application's needs
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true; // Modify based on your application's needs
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; // Modify based on your application's needs
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true; // Modify based on your application's needs
-    }
-
-
-    public String getEmail() {
-        return email;
     }
 
     public Long getId() {
@@ -122,61 +65,38 @@ public class Student  extends BaseModel implements UserDetails{
         this.id = id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public Boolean isPlaced() {
+        return isPlaced;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPlaced(boolean placed) {
+        isPlaced = placed;
     }
 
     public Long getRegisterNumber() {
         return registerNumber;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setRegisterNumber(Long registerNumber) {
         this.registerNumber = registerNumber;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public int getBatch() {
+    public Integer getBatch() {
         return batch;
     }
 
-    public boolean isHosteler() {
+    public Boolean isHosteler() {
         return hosteler;
+    }
+
+    public List<Drive> getRegisteredDriveList() {
+        return registeredDriveList;
     }
 
     public void setHosteler(boolean hosteler) {
         this.hosteler = hosteler;
     }
 
-    public char getGender() {
-        return gender;
-    }
-
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
 
     public String getRollNumber() {
         return rollNumber;
@@ -184,14 +104,6 @@ public class Student  extends BaseModel implements UserDetails{
 
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department =department;
     }
 
     public Marks getMarks() {
@@ -202,26 +114,11 @@ public class Student  extends BaseModel implements UserDetails{
         this.marks = marks;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-
     public void setBatch(int batch) {
         this.batch = batch;
     }
-    public void setOtp(int otp){
-        this.otp=otp;
+    public void setUser(User user) {
+        this.user = user;
     }
-    public  int getOtp(){
-        return this.otp;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
+    public User getUser(){return this.user;}
 }

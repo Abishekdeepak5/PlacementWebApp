@@ -1,4 +1,5 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name="user")
+@Table(name="user_detail")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User  extends BaseModel implements UserDetails{
@@ -24,7 +25,6 @@ public class User  extends BaseModel implements UserDetails{
     private Long id;
     @NotNull
     private String name;
-    @Column(unique = true)
     @NotNull
     private Date dateOfBirth;
     @Column(unique = true)
@@ -32,16 +32,20 @@ public class User  extends BaseModel implements UserDetails{
     private String email;
     @NotNull
     private String password;
-    private boolean verified;
+    private Boolean verified;
     @NotNull
-    private char gender;
+    private Character gender;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.STUDENT;
 
-    private int otp;
+    private Integer otp;
 
     private String department;
+    private String phone;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Student student;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -77,7 +81,12 @@ public class User  extends BaseModel implements UserDetails{
         return true;
     }
 
-
+    public void setStudent(Student student){
+        this.student=student;
+    }
+    public Student getStudent(){
+        return this.student;
+    }
     public String getEmail() {
         return email;
     }
@@ -119,7 +128,7 @@ public class User  extends BaseModel implements UserDetails{
         return dateOfBirth;
     }
 
-    public char getGender() {
+    public Character getGender() {
         return gender;
     }
 
@@ -143,15 +152,39 @@ public class User  extends BaseModel implements UserDetails{
     public void setOtp(int otp){
         this.otp=otp;
     }
-    public  int getOtp(){
+    public  Integer getOtp(){
         return this.otp;
     }
 
-    public boolean isVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+    public void setPhone(String phone){ this.phone=phone; }
+    public String getPhone(){ return this.phone; }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", verified=" + verified +
+                ", gender=" + gender +
+                ", role=" + role +
+                ", otp=" + otp +
+                ", department='" + department + '\'' +
+                ", student=" + student +
+                ", UserId=" + UserId +
+                ", email='" + email + '\'' +
+                ", message='" + message + '\'' +
+                ", error=" + error +
+                ", token='" + token + '\'' +
+                ", isSuccess=" + isSuccess +
+                '}';
     }
 }

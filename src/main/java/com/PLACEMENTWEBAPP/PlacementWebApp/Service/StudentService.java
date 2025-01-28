@@ -17,6 +17,9 @@ public class StudentService {
 
    @Autowired
    private StudentRepository studentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
    @Autowired
    private QueryRepo studentRepo;
     @Autowired
@@ -37,14 +40,10 @@ public class StudentService {
         return studentRepository.findById(id).orElseThrow();
     }
 
-    public DriveRegistration registerForDrive(String email,Long driveId) throws Exception {
-        System.out.println(email);
-      Student student1=studentRepository.findByEmail(email);
-//      Student student1=student.get();
-
+    public DriveRegistration registerForDrive(Student student1,Long driveId) throws Exception {
       Optional<Drive>drive=driverepository.findById(driveId);
       Drive drive1=drive.get();
-
+      System.out.print(student1+"\n"+drive1+"\n");
       if(student1!=null && drive1!=null && drive1.getRegistrationClosingDate().after(new Date())
 ){
           if(student1.getMarks()==null){
@@ -76,7 +75,96 @@ public class StudentService {
           throw new Exception("student or drive is null or drive registration date is closed");
       }
     }
-    public Student uploadMarks(String email,Marks mark) throws Exception {
+    public Student uploadMarks(Student student,Marks mark) throws Exception {
+        try{
+            if(student.getMarks()==null){
+                mark.setStudent(student);
+                markRepository.save(mark);
+                student.setMarks(mark);
+                return studentRepository.save(student);
+            }else{
+                Marks markInfo=student.getMarks();
+                studentRepo.setMarksById(mark.getSSLC(),mark.getHSC1(),mark.getHSC2(),
+                        mark.getDiploma(),mark.getSem1(),mark.getSem2(),mark.getSem3(),
+                        mark.getSem4(),mark.getSem5(),mark.getSem6(),mark.getSem7(),
+                        mark.getCgpa(),mark.getCurrentBacklogs(),mark.isHistoryOfArrear(),markInfo.getId());
+                        studentRepository.save(student);
+            }
+            return student;
+        }
+        catch (Exception e){
+            throw new Exception("student is not found"+e.getMessage());
+        }
+
+
+    }
+    public Marks getMarks(Student student){
+        try{
+            return student.getMarks();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    public DriveResponseDto getDriveResponse(Long driveId,Student student) throws  Exception{
+        Drive drive=getDriveById(driveId);
+        DriveResponseDto driveResponseDto=new DriveResponseDto();
+        driveResponseDto.setDrive(drive);
+        driveResponseDto.companyName=drive.getCompany().getCompanyName();
+        driveResponseDto.setRegistered(drive.isStudentRegister(student));
+        return driveResponseDto;
+    }
+    public List<Company> getCompanies(){
+        return companyService.getCompanies();
+    }
+
+    public Student getStudentByToken(String token){
+        String tokenExtraction=token.substring(7);
+        String email=tokenGenerator.extractUserName(tokenExtraction);
+        System.out.print("\n email "+email);
+        User user=userRepository.findByEmail(email);
+        return user.getStudent();
+    }
+    public Drive getDriveById(Long driveId) throws Exception{
+        Optional<Drive> driveInfo = driverepository.findById(driveId);
+        return  driveInfo.get();
+    }
+    public UserDetailsService userDetailsService() throws Exception {
+        try{
+        return username -> userRepository.findByEmail(username);}
+        catch(Exception e){
+            throw new Exception("student not found");
+        }
+    }
+    public List<DriveResponseDto> getUpcomingDrive(Student student){
+        List<Drive>drive=new ArrayList<>();
+        drive=driverepository.findAll();
+        List<DriveResponseDto>upcomingDrive=new ArrayList<>();
+
+        for(Drive drive1:drive){
+            if(drive1.getDate().after(new Date())){
+                DriveResponseDto responseDto=new DriveResponseDto();
+                if(drive1.getRegisteredStudents().contains(student)){
+                    responseDto.setDrive(drive1);
+                    responseDto.setRegistered(true);
+                }
+                else{
+
+                    responseDto.setDrive(drive1);
+                    responseDto.setRegistered(false);
+                }
+                responseDto.companyName=responseDto.getDrive().getCompany().getCompanyName();
+                upcomingDrive.add(responseDto);
+            }
+        }
+        return upcomingDrive;
+    }
+}
+
+
+
+
 //        try{Student student=getStudentById(markDto.getStudentId());
 //            if(student.getMarks()==null){
 //        Marks marks=new Marks();
@@ -140,95 +228,3 @@ public class StudentService {
 //        catch (Exception e){
 //            throw new Exception(e.getMessage()+"not found");
 //        }
-        try{
-            Student student=studentRepository.findByEmail(email);
-            System.out.println("Mark "+mark);
-            System.out.println("Mark4 "+(student.getMarks()==null)+" "+student.getMarks());
-            if(student.getMarks()==null){
-                System.out.println("Mark3 "+student.getMarks());
-                mark.setStudent(student);
-                markRepository.save(mark);
-                student.setMarks(mark);
-                return studentRepository.save(student);
-            }else{
-                Marks markInfo=student.getMarks();
-                System.out.println("Mark1 "+markInfo);
-                studentRepo.setMarksById(mark.getSSLC(),mark.getHSC1(),mark.getHSC2(),
-                        mark.getDiploma(),mark.getSem1(),mark.getSem2(),mark.getSem3(),
-                        mark.getSem4(),mark.getSem5(),mark.getSem6(),mark.getSem7(),
-                        mark.getCgpa(),mark.getCurrentBacklogs(),mark.isHistoryOfArrear(),markInfo.getId());
-                        studentRepository.save(student);
-                        student=studentRepository.findByEmail(email);
-                        System.out.println("Mark2 "+student.getMarks());
-            }
-            return student;
-        }
-        catch (Exception e){
-            throw new Exception("student is not found"+e.getMessage());
-        }
-
-
-    }
-    public Marks getMarks(String email){
-        try{
-            Student student=studentRepository.findByEmail(email);
-            return student.getMarks();
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
-    public DriveResponseDto getDriveResponse(Long driveId,Student student) throws  Exception{
-        Drive drive=getDriveById(driveId);
-        DriveResponseDto driveResponseDto=new DriveResponseDto();
-        driveResponseDto.setDrive(drive);
-        driveResponseDto.companyName=drive.getCompany().getCompanyName();
-        driveResponseDto.setRegistered(drive.isStudentRegister(student));
-        return driveResponseDto;
-    }
-    public List<Company> getCompanies(){
-        return companyService.getCompanies();
-    }
-    public Student getStudentByToken(String token){
-        String tokenExtraction=token.substring(7);
-        String email=tokenGenerator.extractUserName(tokenExtraction);
-        return studentRepository.findByEmail(email);
-    }
-    public Drive getDriveById(Long driveId) throws Exception{
-        Optional<Drive> driveInfo = driverepository.findById(driveId);
-        return  driveInfo.get();
-    }
-    public UserDetailsService userDetailsService() throws Exception {
-        try{
-        return username -> studentRepository.findByEmail(username);}
-        catch(Exception e){
-            throw new Exception("student not found");
-        }
-    }
-    public List<DriveResponseDto> getUpcomingDrive(String email){
-        Student student=studentRepository.findByEmail(email);
-        List<Drive>drive=new ArrayList<>();
-        drive=driverepository.findAll();
-        List<DriveResponseDto>upcomingDrive=new ArrayList<>();
-
-        for(Drive drive1:drive){
-            if(drive1.getDate().after(new Date())){
-                DriveResponseDto responseDto=new DriveResponseDto();
-                if(drive1.getRegisteredStudents().contains(student)){
-                    responseDto.setDrive(drive1);
-                    responseDto.setRegistered(true);
-                }
-                else{
-
-                    responseDto.setDrive(drive1);
-                    responseDto.setRegistered(false);
-                }
-                responseDto.companyName=responseDto.getDrive().getCompany().getCompanyName();
-                upcomingDrive.add(responseDto);
-            }
-        }
-        return upcomingDrive;
-    }
-
-}

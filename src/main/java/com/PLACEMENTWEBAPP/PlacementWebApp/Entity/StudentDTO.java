@@ -14,17 +14,52 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentDTO {
+public class StudentDTO extends BaseModel{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private Long registerNumber;
-    private String rollNumber;
-    private Date dateOfBirth;
-    private int batch;
-    private String email;
-    private boolean hosteler;
-    private char gender;
-    private String department;
+    public Long id;
+    public Long registerNumber;
+    public String rollNumber;
+    public int batch;
+    public boolean hosteler;
+    public boolean isPlaced;
+    public Role role;
+    public UserDTO user;
+
+    public User getUser(){
+        User user=new User();
+        user.setEmail(this.user.email);
+        user.setDepartment(this.user.department);
+        user.setGender(this.user.gender);
+        user.setName(this.user.name);
+        user.setDateOfBirth(this.user.dateOfBirth);
+        user.setPassword(this.user.password);
+        user.setRole(this.user.role);
+        user.setVerified(this.user.verified);
+        user.setOtp(this.user.otp);
+        user.setPhone(this.user.phone);
+        return user;
+    }
+    public Student getStudentDetail(){
+        Student student = new Student();
+        student.setPlaced(this.isPlaced);
+        student.setBatch(this.batch);
+        student.setHosteler(this.hosteler);
+        student.setRegisterNumber(this.registerNumber);
+        student.setRollNumber(this.rollNumber);
+        return student;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentDTO{" +
+                "id=" + id +
+                ", registerNumber=" + registerNumber +
+                ", rollNumber='" + rollNumber + '\'' +
+                ", batch=" + batch +
+                ", hosteler=" + hosteler +
+                ", isPlaced=" + isPlaced +
+                ", user=" + user +
+                '}';
+    }
 }

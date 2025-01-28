@@ -5,6 +5,7 @@ import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.OtpVerificationRequest;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.ResponseDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Staff;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.StudentDTO;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.User;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StaffRepository;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Service.AuthService;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
@@ -26,17 +27,18 @@ public class AuthController {
     private StaffRepository staffRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody Student student){
+    public ResponseEntity<?> signUp(@RequestBody StudentDTO student){
         try{
-            authService.createNewStudent(student);
-            return ResponseEntity.ok(Map.of("message","otp sent to mail!"));
+            User user=authService.createNewStudent(student);
+//            Map.of("message","otp sent to mail!")
+            return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",e.getMessage()));
         }
     }
 
     @PostMapping("/signup/verify")
-    public ResponseEntity<?>verifyOtp(@RequestBody Student student){
+    public ResponseEntity<?> verifyOtp(@RequestBody StudentDTO student){
             try{
                 int otp= Integer.valueOf(student.message);
                 if(authService.verifyOtp(otp, student)){
@@ -51,13 +53,23 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) throws Exception {
         System.out.println("Welcome to login page");
         try{
-          return ResponseEntity.ok( authService.Login(loginDto));
+          return ResponseEntity.ok(authService.Login(loginDto));
         }
         catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("msg","Error : " + e.getMessage()));
+          return ResponseEntity.status(500).body(Map.of("msg",e.getMessage()));
         }
-
     }
+    @PostMapping("/sendOtp")
+    public ResponseEntity<?> sendOtp(@RequestBody LoginDto loginDto){
+        try{
+            authService.sendOtp(loginDto);
+            return ResponseEntity.ok(Map.of("msg","otp sent"));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("msg",e.getMessage()));
+        }
+    }
+
     @PostMapping("/staffRegister")
     public Staff createStaff(@RequestBody Staff staff){
         System.out.println(staff.getEmail());

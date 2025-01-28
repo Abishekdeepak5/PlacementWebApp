@@ -1,14 +1,14 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Dto;
 
 public class LoginDto {
-    private Long RegisterNumber;
+    private String email;
     private String password;
 
-    public Long getRegisterNumber() {
-        return RegisterNumber;
+    public String getEmail() {
+        return email;
     }
-    public void setRegisterNumber(Long registerNumber) {
-        RegisterNumber = registerNumber;
+    public void setEmail(String email) {
+        this.email =email;
     }
     public String getPassword() {
         return password;

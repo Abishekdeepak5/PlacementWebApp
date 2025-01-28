@@ -63,6 +63,7 @@ public class StaffController {
     }
     @PostMapping("/createDrive")
     public ResponseEntity<?> createNewDrive(@RequestBody DriveDto driveDto){
+        System.out.print(driveDto);
         try{
             return ResponseEntity.ok(staffService.createNewDrive(driveDto));
         }

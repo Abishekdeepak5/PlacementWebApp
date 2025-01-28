@@ -3,9 +3,12 @@ package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Configuration.SecurityConfig;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.LoginDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.ResponseDto;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Role;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.StudentDTO;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.User;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.StudentRepository;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.UserRepository;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,52 +25,67 @@ public class AuthService {
     private StudentRepository studentRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private OTPService otpService;
 
     @Autowired
     private TokenGenerator tokenGenerator;
 
-    public void createNewStudent(Student student) throws Exception {
-        System.out.println("Received Student: " + student.getName()); // Debugging
-        if (studentRepository.existsByEmail(student.getEmail())) {
+    public User createNewStudent(StudentDTO student) throws Exception {
+        System.out.println("Received Student: " + student);
+        if (userRepository.existsByEmail(student.user.email)) {
             throw new Exception("Email is already taken!");
         }
-        if (studentRepository.existsByRegisterNumber(student.getRegisterNumber())) {
+        if (studentRepository.existsByRegisterNumber(student.registerNumber)) {
             throw new Exception("Register number is already taken!");
         }
         int otpValue=otpService.optGenerator();
-        student.setOtp(otpValue);
-        otpService.sendEmail(student.getEmail(),otpValue);
-        studentRepository.save(student);
+        student.user.otp=otpValue;
+//        otpService.sendEmail(student.user.email,otpValue);
+        User user=student.getUser();
+        userRepository.save(user);
+        if(student.role==Role.STUDENT){
+            Student studentDetails=student.getStudentDetail();
+            studentDetails.setUser(user);
+            user.setStudent(studentDetails);
+            studentRepository.save(studentDetails);
+        }
+        return user;
     }
-    public boolean verifyOtp(int otp,Student student)throws Exception{
-        Student student1=studentRepository.findByEmail(student.getEmail());
-        if(otp==student1.getOtp()){
-            student1.setVerified(true);
-            studentRepository.save(student1);
+    public boolean verifyOtp(int otp,StudentDTO student)throws Exception{
+        User user=userRepository.findByEmail(student.user.email);
+        if(otp==user.getOtp()){
+            user.setVerified(true);
+            userRepository.save(user);
             return true;
         }
         return false;
     }
     public ResponseDto Login(LoginDto loginDto) throws Exception {
-        Student student=studentRepository.findByRegisterNumber(loginDto.getRegisterNumber());
-        if(!student.isVerified()){
-            throw new Exception("Please verify your email!");
+        User user=userRepository.findByEmail(loginDto.getEmail());
+        System.out.print("user "+user);
+        if(!user.isVerified()){
+            throw new Exception("verify");
         }
-
         ResponseDto responseDto=new ResponseDto();
-        if(student.getPassword().equals(loginDto.getPassword())){
+        if(user.getPassword().equals(loginDto.getPassword())){
 //            String accessToken=tokenGenerator.generateAccessToken(student.getEmail(),student.getId(),student.getRole());
-            String accessToken=tokenGenerator.generateAccessToken(student);
-            String refreshToken=tokenGenerator.generateRefreshToken(student.getEmail(),student.getId(),student.getRole());
-            responseDto.setStudent(student);
+            String accessToken=tokenGenerator.generateAccessToken(user.getEmail());
+            String refreshToken=tokenGenerator.generateRefreshToken(user.getEmail(),user.getId(),user.getRole());
+            responseDto.setUser(user);
             responseDto.setAccessToken(accessToken);
             responseDto.setRefreshToken(refreshToken);
         }
         else{
-            throw new Exception("not a valid password");
+            throw new Exception("invalid password");
         }
         return responseDto;
     }
 
+    public void sendOtp(LoginDto loginDto) throws Exception{
+        User user=userRepository.findByEmail(loginDto.getEmail());
+        otpService.sendEmail(user.getEmail(),user.getOtp());
+    }
 }

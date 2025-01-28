@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public class QueryRepo {
@@ -70,5 +71,4 @@ public class QueryRepo {
         String formattedDate = outputFormat.format(dateObj);
         return formattedDate;
     }
-
 }

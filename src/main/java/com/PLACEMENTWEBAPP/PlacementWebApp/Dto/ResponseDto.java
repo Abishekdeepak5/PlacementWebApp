@@ -1,18 +1,19 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Dto;
 
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.User;
 
 public class ResponseDto {
-    private Student student;
+    private User user;
     private String accessToken;
     private String refreshToken;
 
-    public Student getStudent() {
-        return student;
+    public User getUser() {
+        return user;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setUser(User user) {
+        this.user= user;
     }
 
     public String getAccessToken() {

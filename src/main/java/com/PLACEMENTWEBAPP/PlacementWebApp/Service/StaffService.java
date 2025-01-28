@@ -3,8 +3,6 @@ package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Dto.DriveDto;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Company;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Drive;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Marks;
-import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
 import com.PLACEMENTWEBAPP.PlacementWebApp.Repository.QueryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +22,7 @@ public class StaffService {
 
     public  ResponseEntity<?> createNewDrive(DriveDto driveDto) {
         try{
+            System.out.println(driveDto);
             if(driveDto.id==0){
                 return ResponseEntity.ok(driveService.createNewDrive(driveDto));
             }

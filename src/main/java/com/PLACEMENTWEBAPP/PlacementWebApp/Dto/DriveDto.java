@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 public class DriveDto {
     public Long id;
-    public Date RegistrationClosingDate;
+    public Date registrationClosingDate;
     private Date date;
     private String jobTitle;
     private Double eligibleCgpa;
@@ -88,11 +88,11 @@ public class DriveDto {
     }
 
     public Date getRegistrationClosingDate() {
-        return RegistrationClosingDate;
+        return registrationClosingDate;
     }
 
     public void setGetRegistrationClosingDate(Date getRegistrationClosingDate) {
-        this.RegistrationClosingDate = getRegistrationClosingDate;
+        this.registrationClosingDate = getRegistrationClosingDate;
     }
 
     public void setCompanyId(Long companyId) {
@@ -103,7 +103,7 @@ public class DriveDto {
     public String toString() {
         return "DriveDto{" +
                 "id=" + id +
-                ", RegistrationClosingDate=" + RegistrationClosingDate +
+                ", RegistrationClosingDate=" + registrationClosingDate +
                 ", date=" + date +
                 ", jobTitle='" + jobTitle + '\'' +
                 ", eligibleCgpa=" + eligibleCgpa +

@@ -26,11 +26,10 @@ public class StudentController {
    @PostMapping("/registerForDrive/{driveId}")
     public BaseModel registerForDrive(@RequestHeader("Authorization")String token , @PathVariable Long driveId){
        BaseModel response=new BaseModel();
+       Student student=studentService.getStudentByToken(token);
+       System.out.println(student);
        try {
-           System.out.println("Register Drive");
-           String tokenExtraction = token.substring(7);
-           String email = tokenGenerator.extractUserName(tokenExtraction);
-           DriveRegistration driveRegistration = studentService.registerForDrive(email, driveId);
+           DriveRegistration driveRegistration = studentService.registerForDrive(student, driveId);
            return response;
        }catch(Exception e){
            response.isSuccess=false;
@@ -41,10 +40,8 @@ public class StudentController {
    @PutMapping("/uploadMarks")
     public Student uploadmarks(@RequestHeader("Authorization")String token, @RequestBody Marks mark){
       try{
-          String tokenExtraction=token.substring(7);
-          String email=tokenGenerator.extractUserName(tokenExtraction);
-          System.out.println("welcome  "+email);
-          return studentService.uploadMarks(email,mark);
+          Student student=studentService.getStudentByToken(token);
+          return studentService.uploadMarks(student,mark);
       }catch(Exception e){
           System.out.println(e.getMessage());
           return null;
@@ -52,15 +49,13 @@ public class StudentController {
    }
     @GetMapping("/getMarks")
     public Marks getMarks(@RequestHeader("Authorization")String token){
-        String tokenExtraction=token.substring(7);
-        String email=tokenGenerator.extractUserName(tokenExtraction);
-        return studentService.getMarks(email);
+        Student student=studentService.getStudentByToken(token);
+        return studentService.getMarks(student);
     }
    @GetMapping("/getUpcomingDrive")
     public List<DriveResponseDto> getUpcomingDrive(@RequestHeader("Authorization")String token){
-       String tokenExtraction=token.substring(7);
-       String email=tokenGenerator.extractUserName(tokenExtraction);
-       return studentService.getUpcomingDrive(email);
+       Student student=studentService.getStudentByToken(token);
+       return studentService.getUpcomingDrive(student);
    }
    @GetMapping("/getDrive/{driveId}")
    public DriveResponseDto getDrive(@RequestHeader("Authorization")String token , @PathVariable Long driveId){

@@ -1,6 +1,7 @@
 package com.PLACEMENTWEBAPP.PlacementWebApp.Service;
 
 import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.Student;
+import com.PLACEMENTWEBAPP.PlacementWebApp.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenGenerator {
     private static final Logger logger = LoggerFactory.getLogger(OTPService.class);
-
-
 
     @Scheduled(fixedRate = 60000) // Run every minute
     public void deleteExpiredOtps() {
@@ -64,9 +63,9 @@ public class TokenGenerator {
     }
 
     //Method to Generate Access Token
-    public String generateAccessToken(Student student) {
+    public String generateAccessToken(String email) {
         return Jwts.builder()
-                .setSubject(student.getEmail())
+                .setSubject(email)
 //                .claim("userId", userId)
 //                .claim("role", role.name())  3 days
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24* 60 * 3 ))
